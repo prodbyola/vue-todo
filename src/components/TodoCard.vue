@@ -1,11 +1,11 @@
 <template>
   <div class="todo_card">
-    <h3 class="task_title">{{ taskTitle }}</h3>
-    <p class="task_details">{{ taskDetails }}</p>
+    <h3 class="task_title">{{ title }}</h3>
+    <p class="task_details">{{ details }}</p>
     <div class="tdc_footer">
       <div class="task_cat"></div>
       <div class="task_done">
-        <input type="checkbox" />
+        <input type="checkbox" :model-value="done" />
         <p>Done</p>
       </div>
     </div>
@@ -51,7 +51,9 @@
 }
 </style>
 <script setup lang="ts">
-const taskTitle = 'Buy groceries'
-const taskDetails =
-  "I'll be visiting FoodCo this afternoon to stock more Milk, eggs, bread and fruits for this week. Don't forget to get Elubo and Garri😂"
+defineProps<{
+  title: string
+  details: string
+  done: boolean
+}>()
 </script>

@@ -237,3 +237,70 @@ We can pass attribute value from Javascript to this tag using `v-bind` shorthand
 ```
 
 With this, the `id` attribute of the `h3` tag will now be "task-001". Notice the `:` before the attribute. That's how we tell HTML that we're about to pass Javascript as the attribute's value. This can help us to manipulate HTML contents dynamically as we'll see soon.
+
+#### Props
+
+Let's say we want to define a `task` object in the parent component `HomeView` and display the object using `TodoCard`. So we instead of rendering our `task` data directly from `TodoCard`, we define an object that represents this data in `HomeView` and pass it to `TodoCard`. We can achieve this with `props`. Props is how we pass data from parent components to child components:
+
+- Define `task` object in `HomeView`. We still have the same data as before, except we now have it in an object with an extra `done` member to indicate whether the task is done. We'll use this later:
+
+```html
+<template>
+  <div>
+    <TodoCard />
+  </div>
+</template>
+
+<script setup lang="ts">
+  import TodoCard from '@/components/TodoCard.vue'
+
+  const task = {
+    title: 'Buy groceries',
+    details:
+      "I'll be visiting FoodCo this afternoon to stock more Milk, eggs, bread and fruits for this week. Don't forget to get Elubo and Garri😂",
+    done: false
+  }
+</script>
+```
+
+- Now we need to pass this data down to `TodoCard` but first, we should define the props signature that `TodoCard` must accept. Update the `script` section of `TodoCard.vue`:
+
+```html
+<script setup lang="ts">
+  defineProps<{
+    title: string
+    details: string
+    done: boolean
+  }>()
+</script>
+```
+
+- Now any parent component that uses `TodoCard` must define these props as attribute but before we do that, let's update `TodoCard` template to display the `props` data:
+
+```html
+<template>
+  <div class="todo_card">
+    <h3 class="task_title">{{ title }}</h3>
+    <p class="task_details">{{ details }}</p>
+    <div class="tdc_footer">
+      <div class="task_cat"></div>
+      <div class="task_done">
+        <input type="checkbox" :model-value="done" />
+        <p>Done</p>
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+We'll learn about `model-value` later.
+
+- Let's update our usage of `TodoCard` in `HomeView` to receive the props:
+
+```html
+<template>
+  <div>
+    <TodoCard :title="task.title" :details="task.details" :done="task.done" />
+  </div>
+</template>
+```
