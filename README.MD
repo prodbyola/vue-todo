@@ -125,6 +125,7 @@ It's time to create your First UI component an SFC. Vue's Single File Component 
 
     .task_details {
       margin: 8px auto 24px auto;
+      height: 70px;
     }
 
     .tdc_footer {
@@ -285,15 +286,13 @@ Let's say we want to define a `task` object in the parent component `HomeView` a
     <div class="tdc_footer">
       <div class="task_cat"></div>
       <div class="task_done">
-        <input type="checkbox" :model-value="done" />
+        <input type="checkbox" :checked="done" />
         <p>Done</p>
       </div>
     </div>
   </div>
 </template>
 ```
-
-We'll learn about `model-value` later.
 
 - Let's update our usage of `TodoCard` in `HomeView` to receive the props:
 
@@ -303,4 +302,105 @@ We'll learn about `model-value` later.
     <TodoCard :title="task.title" :details="task.details" :done="task.done" />
   </div>
 </template>
+```
+
+#### Iteration
+
+Our task at the moment is just one hardcoded `task` object. But we'll have multiple tasks in our app. We can simulate this by creating an array of tasks and display them all using the same `TodoCard` component and `v-for` directive.
+
+- In `HomeView`, let's create a `tasks` array that contains 3 task objects:
+
+```html
+<script setup lang="ts">
+  import TodoCard from '@/components/TodoCard.vue'
+
+  const tasks = [
+    {
+      title: 'Buy groceries',
+      details:
+        "I'll be visiting FoodCo this afternoon to stock more Milk, eggs, bread and fruits for this week. Don't forget to get Elubo and Garri😂",
+      done: false
+    },
+    {
+      title: 'Finish homework',
+      details: 'Math assignment and essay due tomorrow. I have to complete them tonight.',
+      done: true
+    },
+    {
+      title: 'Call mom',
+      details: "Wish her a happy birthday and remind her to get dad's pair of glasses.",
+      done: false
+    }
+  ]
+</script>
+```
+
+- Now let's use `v-for` directive to iterate over each task object in `tasks` and pass them to `TodoCard` for display:
+
+```html
+<template>
+  <div>
+    <TodoCard
+      v-for="(task, index) in tasks"
+      :key="index"
+      :title="task.title"
+      :details="task.details"
+      :done="task.done"
+    />
+  </div>
+</template>
+```
+
+Notice how we add an extra `key` attribute that accepts `index`, which is the unique index of an item in the array. The `key` attribute is required by vue to uniquely identified each item in the DOM when you create a loop using the `v-for` directive.
+[img 5]
+
+We need to lay our items out horizontally. Let's place them in a CSS `flex` container.
+
+- Create `style` section in `HomeView`:
+
+```html
+<style lang="scss" scoped>
+  .task_list {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 16px;
+    row-gap: 16px;
+    width: 100%;
+  }
+</style>
+```
+
+- Now update the `template` so the contents are placed within `task_list`:
+
+```html
+<template>
+  <div class="task_list">
+    <TodoCard
+      v-for="(task, index) in tasks"
+      :key="index"
+      :title="task.title"
+      :details="task.details"
+      :done="task.done"
+    />
+  </div>
+</template>
+```
+
+- Lastly, update `src/assets/main.css` so that this is all you have:
+
+```css
+@import './base.css';
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  color: rgb(100, 99, 99);
+}
 ```

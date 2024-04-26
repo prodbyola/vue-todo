@@ -5,7 +5,7 @@
     <div class="tdc_footer">
       <div class="task_cat"></div>
       <div class="task_done">
-        <input type="checkbox" :model-value="done" />
+        <input type="checkbox" :checked="done" />
         <p>Done</p>
       </div>
     </div>
@@ -27,6 +27,7 @@
 
   .task_details {
     margin: 8px auto 24px auto;
+    height: 70px;
   }
 
   .tdc_footer {
