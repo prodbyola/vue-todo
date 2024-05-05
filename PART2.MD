@@ -246,3 +246,47 @@ Secondly, we added [Click Event](https://developer.mozilla.org/en-US/docs/Web/AP
 Now save your project, click on `add_icon` and you'll see this takes you to `CreateTaskView`. Click on `app_title` and it will take you back to the `HomeView`.
 
 [img 3]
+
+#### Local State Management
+
+Before we build out the form for creating a new task, let's do a quick introduction to state management in VueJs. Think of a `state` as a piece of data which when updated, its changes is reflected in the UI.
+
+###### Ref API
+
+As an example, let's update our `CreateTaskView` with this code:
+
+```html
+<template>
+  <h3>Create Task Page</h3>
+  <p>My state {{ count }}.</p>
+  <button @click="increment">Increment</button>
+</template>
+
+<script setup lang="ts">
+  let count = 0
+  const increment = () => {
+    counter++
+    console.log(counter)
+  }
+</script>
+```
+
+We create a variable `count` and function `increment` for incrementing `count` variable. We also log the current value of `count`. In the template, we display the value of `count` and add a `button` which calls `increment` everytime it's clicked.  
+Navigate to http://localhost:5173/create-task (if you're not there already) and click on the `Increment` button. Nothing seems to be happening right? If you open your browser's inspection tool and check the console tab however, you'll notice the value of `count` is continuously updated as you click on the button. The changes is not reflected on the UI because you didn't "mark" the count value as a `state`.
+
+Now let's update the `script` section of our code:
+
+```html
+<script setup lang="ts">
+  import { ref } from 'vue'
+
+  let count = ref(0)
+  const increment = () => {
+    count.value++
+    console.log(count)
+  }
+</script>
+```
+
+Now we wrapped the value of count in vue's `ref` function. This marks `count` as a state whose changes should reflect on the UI. To access the actual value of `count` **within our Javascript code**, we need to get the `value` property this way `count.value`. This is because `ref(data)` returns a `Ref<T>` object where `T` is the type of `data`. To access or update the actual data value, you need to get the `value` property. Now click the `Increment` button again and you'll see your changes reflecting.  
+**Notice that calling the `value` property is not required within the template**.
