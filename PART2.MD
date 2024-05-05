@@ -178,3 +178,71 @@ With this code, we create a list of categories and iteratively display them usin
 ```
 
 [img 2]
+
+Our dynamic page contents will be handled and displayed by `RouterView` while `AppHeader` and `AppSidebar` will remain static throughout the app. Let's proceed to the next section to see how this works.
+
+#### Navigation
+
+VueJs use [vue-router](https://router.vuejs.org/) to manage navigation within our apps. Let's create another page and programatically navigate between two pages.
+
+- Create a new file component we'll use for adding new tasks `src/views/CreateTaskView.vue` and add the following code. We'll update the code later but let's take this as a new page.
+
+```html
+<template>
+  <h3>Create Task Page</h3>
+  <p>This page will be used to create new tasks.</p>
+</template>
+```
+
+- Now update your `src/router/index.ts` file to import `CreateTaskView` and map it to a router path:
+
+```ts
+import { createRouter, createWebHistory } from 'vue-router'
+import HomeView from '../views/HomeView.vue'
+import CreateTaskView from '@/views/CreateTaskView.vue'
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: '/',
+      name: 'home',
+      component: HomeView
+    },
+    {
+      path: '/create-task',
+      name: 'create-task',
+      component: CreateTaskView
+    }
+  ]
+})
+
+export default router
+```
+
+- Now go to `src/components/common/AppHeader`, create a `script` section and update your `template` code:
+
+```html
+<template>
+  <header>
+    <h3 @click="goToRoute('home')" class="app_title">todo</h3>
+    <div @click="goToRoute('create-task')" class="add_icon">
+      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+        <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
+      </svg>
+    </div>
+  </header>
+</template>
+
+<script setup lang="ts">
+  import router from '@/router'
+
+  const goToRoute = (name: string) => router.push({ name })
+</script>
+```
+
+Firstly, in the `script` tag, we created a new function `goToRoute` that accepts the destination route's name as parameter. If you go back and check `src/router/index.ts`, you would notice we have a `name` property on each defined route. You can pass a name as part of the options for `router.push()` and vue will take you to the destination.  
+Secondly, we added [Click Event](https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event) to both `app_title` and `add_icon` elements which respectively call `goToRoute` and supply the destination route names.  
+Now save your project, click on `add_icon` and you'll see this takes you to `CreateTaskView`. Click on `app_title` and it will take you back to the `HomeView`.
+
+[img 3]
