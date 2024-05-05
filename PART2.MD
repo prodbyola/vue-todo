@@ -253,7 +253,7 @@ Before we build out the form for creating a new task, let's do a quick introduct
 
 ###### Ref API
 
-As an example, let's update our `CreateTaskView` with this code:
+We can use vue's [ref](https://vuejs.org/api/reactivity-core.html#ref) to convert a Javascript value to a vue state. As an example, let's update our `CreateTaskView` with this code:
 
 ```html
 <template>
@@ -290,3 +290,75 @@ Now let's update the `script` section of our code:
 
 Now we wrapped the value of count in vue's `ref` function. This marks `count` as a state whose changes should reflect on the UI. To access the actual value of `count` **within our Javascript code**, we need to get the `value` property this way `count.value`. This is because `ref(data)` returns a `Ref<T>` object where `T` is the type of `data`. To access or update the actual data value, you need to get the `value` property. Now click the `Increment` button again and you'll see your changes reflecting.  
 **Notice that calling the `value` property is not required within the template**.
+
+###### Reactive API
+
+What if a `state` is an `object` with many properties? Calling `obj.value.property` to access/update each property may seem ineffecient. Let's demonstrate how [reactive](https://vuejs.org/api/reactivity-core.html#reactive) instead of `ref` addresses this issue. Update your `CreateTaskView` with this code:
+
+```html
+<template>
+  <h3>Create Task Page</h3>
+  <p>Your name is {{ person.name }}.</p>
+  <p>Your age is {{ person.age }}.</p>
+  <button @click="update">Update Person</button>
+</template>
+
+<script setup lang="ts">
+  import { reactive, ref } from 'vue'
+
+  const restore = ref(false) // whether to restore `person` state to default value
+
+  const defaultDetails = {
+    name: 'guest',
+    age: 0
+  }
+
+  let person = reactive(structuredClone(defaultDetails))
+
+  const update = () => {
+    if (restore.value) {
+      person.name = defaultDetails.name
+      person.age = defaultDetails.age
+
+      restore.value = false
+      return
+    }
+
+    person.name = 'Falola'
+    person.age = 54
+    restore.value = true
+  }
+</script>
+```
+
+This code attempts to toggle between two `person` object values. When `restore` is `true`, we set `person` to `defaultDetails`. Otherwise, we add some values. Your real-world implementation may be simpler. For example, we had to create a deep clone of `defaultDetails` (using Javascript's [structuredClone](https://developer.mozilla.org/docs/Web/API/structuredClone)) because we need to use its original data to restore the value of `person`. The main lesson here is that we're able to access/update the properties of `person` state in the same way we would access/update a normal Javascript object.
+
+###### V-Model
+
+All the state changes we've observed so far are one-directional. They're based on changes triggered by our Javascript code. That is, changes only flow from `script` to `template`. What if we want to update a `state` based on, say user-input? Vue's [v-model](https://vuejs.org/guide/components/v-model.html) helps us bind user input fields to Javascript state, without the need to manually watch and update input values through events. Let's see `v-mode` in action. Replace `CreateTaskView` with the following code:
+
+```html
+<template>
+  <h3>Create Task Page</h3>
+  <p>Your name is {{ person.name }}.</p>
+  <p>Your age is {{ person.age }}.</p>
+  <input placeholder="Name" v-model="person.name" />
+  <input placeholder="Age" v-model="person.age" type="number" />
+</template>
+
+<script setup lang="ts">
+  import { reactive } from 'vue'
+
+  let person = reactive({
+    name: 'guest',
+    age: 0
+  })
+</script>
+```
+
+Now we have two input fields, each binded to the properties of `person` state and changes made through the fields are automatically reflected in our template.
+[img 4]
+
+###### Create Task Form
+
+With our understanding of vue's `ref`, `reactive` and `v-model` we can now build our form for creating a new task.

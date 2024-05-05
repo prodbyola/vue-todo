@@ -15,7 +15,7 @@ defineProps<{
 <style lang="scss" scoped>
 .app_category {
   display: flex;
-  column-gap: 16px;
+  column-gap: 12px;
   align-items: center;
   cursor: pointer;
 
