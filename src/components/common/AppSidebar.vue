@@ -1,15 +1,10 @@
 <template>
   <div class="app_sidebar">
-    <TodoCategory
-      v-for="(cat, index) in categories"
-      :key="index"
-      :color="cat.color"
-      :title="cat.title"
-    />
+    <TodoCategory v-for="(tag, index) in tags" :key="index" :color="tag.color" :title="tag.title" />
   </div>
 </template>
 <script setup lang="ts">
-import { categories } from '@/shared'
+import { tags } from '@/shared'
 import TodoCategory from '../TodoCategory.vue'
 </script>
 <style>

@@ -11,20 +11,18 @@
       />
       <div class="tag_list">
         <TodoCategory
-          v-for="(cat, index) in categories"
+          v-for="(tag, index) in tags"
           :key="index"
-          :title="cat.title"
-          :color="cat.color"
+          :title="tag.title"
+          :color="tag.color"
           class="task_tag"
           :class="{
-            active: newTask.tags.includes(cat.title)
+            active: newTask.tags.includes(tag.title)
           }"
-          @click="() => toggleTag(cat.title)"
+          @click="() => toggleTag(tag.title)"
         />
       </div>
       <AppButton @click="addTask" class="action_btn" text="Add Task" />
-      <!-- <div class="action"></div> -->
-
       <div v-if="tasks.length" class="task_list">
         <div v-for="(task, index) in tasks" :key="index" class="task_card">
           <p>{{ task.title }}</p>
@@ -38,7 +36,7 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import type { TaskType } from '@/shared'
-import { categories } from '@/shared'
+import { tags } from '@/shared'
 
 import InputField from '@/components/common/InputField.vue'
 import TodoCategory from '@/components/TodoCategory.vue'
